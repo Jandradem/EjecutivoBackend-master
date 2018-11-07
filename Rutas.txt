@@ -1,0 +1,57 @@
+Lo primero que encontramos para cada uno de los servicios es el metodo que se usa para acceder a ese servicio.
+Lo segundo es la ruta para accederlo.
+Por ejemplo, si el servidor rails está ejecutandose en el puerto 8080, y queremos cargar las unidades, debemos escribir en el navegador la siguiente url localhost:8080/unidades
+
+------Unidades
+GET	 /unidades
+Retorna un Array con las unidades
+
+GET	 /unidades/:id
+Retorna un objeto JSON conteniendo la unidad de id especificada
+
+------Rol
+GET	 /rols
+Retorna un Array con los rols de usuario registrados en el sistema
+
+GET	 /rols/:id
+Retorna un objeto JSON con el rol de id especificado
+
+------Login
+POST	 /login
+Recibe dos parametros, 'login[usuariologin]' conteniendo el nombre de usuario y 'login[passwordlogin]' conteniendo la clave del usuario. Responde con un objeto JSON conteniendo una clave llamada 'success', esta es true si el inicio de sesion es exitoso o false si este falla. Adicionalmente, si el inicio de sesion es exitoso, tambien retorna dentro del mismo objeto, una clave llamada user conteniendo el id del usuario y su rol.
+EJ: Una petición POST conteniendo los parametros 'login[usuariologin]' : 'usuario' y 'login[passwordlogin' : 'clave' retornaría:
+-En caso de ser exitoso:
+{
+    "success": true,
+    "user": {
+        "idlogin": 1,
+        "idrollogin": 3
+    }
+}
+-En caso de fallar:
+{
+    "success": false
+}
+
+------Usuario
+GET	 /usuarios/:id
+Retorna la información básica del usuario. (id, idrol, nombre de usuario) en un objeto JSON
+
+GET	 /usuarios/:id/catalogo
+Retorna un Array de objetos JSON con los indicadores disponibles por el usuario para configurar (CATALOGO)
+
+GET	 /usuarios/:usuario_id/indicadores
+Retorna los indicadores configurados por el usuario (NO EL CATALOGO)
+
+POST	 /usuarios/:usuario_id/indicadores
+Recibe todos los parametros configurables por el usuario para un indicador (alias, valores, fechas) y crea el indicador para el usuario dado.
+
+GET	 /usuarios/:usuario_id/indicadores/:id
+Retorna en un objeto JSON los valores y fechas configurados para el indicador con id dado
+
+PATCH	 /usuarios/:usuario_id/indicadores/:id
+PUT	 /usuarios/:usuario_id/indicadores/:id
+Ambos metodos reciben los parametros a reconfigurar para un indicador existente.
+
+DELETE	 /usuarios/:usuario_id/indicadores/:id
+Al hacerse una peticion con el metodo DELETE a la ruta anterior, se eliminará el indicador de id = :id de los indicadores del usuario de id = :usuario_id

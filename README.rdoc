@@ -1,0 +1,3 @@
+== README
+
+Backend in Ruby on Rails for an university project where we were working in a Condominium system, and our part of the system has to help the owner and the administrators and accounting people to make decisions based in the financial behavior of the condominium. This project is just the backend, it implements restful services as resources that are consumed from the frontend apps (a web one, using Sencha Ext.js and a mobile one using Sencha Touch).

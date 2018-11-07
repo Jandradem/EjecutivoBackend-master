@@ -1,0 +1,306 @@
+-----------Indicadores------------
+
+
+
+BASE DE DATOS DREAM TEAM A:
+
+Catalogos:
+
+ADMINISTRADOR Y JUNTA DE CONDOMINIO:
+-------------------------------------------------------------------------------------------------------------------------	
+1. Minimizar gastos en servicios basicos
+
+Descripcion: El objetivo de este indicador es minimizar los gastos de servicios basicos que incluye: agua, luz y gas , calculando asi los gastos correspondientes a cada servicio, para luego sumar los 3.
+
+Se tocan las siguientes tablas: detalles, proveedorxservicios, servicios, proveedorxcondominios.
+
+SQL = select sum(montodetalle) as monto from gestioncondominio.detalles inner join
+(select DISTINCT(proveedorxservicios.idproveedorxservicio) from 
+gestioncondominio.proveedorxservicios, 
+gestioncondominio.servicios, 
+gestioncondominio.proveedorxcondominios,
+gestioncondominio.comprobantedepagos
+where 
+proveedorxcondominios.idproveedorxcondominio = comprobantedepagos.idproveedorxcondominiocomprobantedepago
+and comprobantedepagos.fechacomprobantedepago = '2014-02-15'
+and proveedorxcondominios.idproveedorxcondominio = proveedorxservicios.idproveedorxcondominioproveedorxservicio
+and   servicios.idservicio = proveedorxservicios.idservicioproveedorxservicio
+and   proveedorxcondominios.idcondominioproveedorxcondominio = '0'
+and (servicios.descripcionservicio='Agua' or servicios.descripcionservicio='Luz' or servicios.descripcionservicio='Gas'))
+as calculo2 on detalles.idproveedorxserviciodetalle = calculo2.idproveedorxservicio
+
+Hacer:
+Calcular cuanto se debe cobrar el mes que viene, calcular estimado.
+SQL para discriminar en una tabla el gasto por cada servicios basicos.
+
+Agua:
+SQL = select sum(montodetalle) as monto from gestioncondominio.detalles inner join
+(select DISTINCT(proveedorxservicios.idproveedorxservicio) from 
+gestioncondominio.proveedorxservicios, 
+gestioncondominio.servicios, 
+gestioncondominio.proveedorxcondominios,
+gestioncondominio.comprobantedepagos
+where 
+proveedorxcondominios.idproveedorxcondominio = comprobantedepagos.idproveedorxcondominiocomprobantedepago
+and comprobantedepagos.fechacomprobantedepago = '2014-02-15'
+and proveedorxcondominios.idproveedorxcondominio = proveedorxservicios.idproveedorxcondominioproveedorxservicio
+and   servicios.idservicio = proveedorxservicios.idservicioproveedorxservicio
+and   proveedorxcondominios.idcondominioproveedorxcondominio = '0'
+and (servicios.descripcionservicio='Agua'))
+as calculo2 on detalles.idproveedorxserviciodetalle = calculo2.idproveedorxservicio
+
+Luz:
+SQL = select sum(montodetalle) as monto from gestioncondominio.detalles inner join
+(select DISTINCT(proveedorxservicios.idproveedorxservicio) from 
+gestioncondominio.proveedorxservicios, 
+gestioncondominio.servicios, 
+gestioncondominio.proveedorxcondominios,
+gestioncondominio.comprobantedepagos
+where 
+proveedorxcondominios.idproveedorxcondominio = comprobantedepagos.idproveedorxcondominiocomprobantedepago
+and comprobantedepagos.fechacomprobantedepago = '2014-02-15'
+and proveedorxcondominios.idproveedorxcondominio = proveedorxservicios.idproveedorxcondominioproveedorxservicio
+and   servicios.idservicio = proveedorxservicios.idservicioproveedorxservicio
+and   proveedorxcondominios.idcondominioproveedorxcondominio = '0'
+and (servicios.descripcionservicio='Luz'))
+as calculo2 on detalles.idproveedorxserviciodetalle = calculo2.idproveedorxservicio
+
+Gas:
+SQL = select sum(montodetalle) as monto from gestioncondominio.detalles inner join
+(select DISTINCT(proveedorxservicios.idproveedorxservicio) from 
+gestioncondominio.proveedorxservicios, 
+gestioncondominio.servicios, 
+gestioncondominio.proveedorxcondominios,
+gestioncondominio.comprobantedepagos
+where 
+proveedorxcondominios.idproveedorxcondominio = comprobantedepagos.idproveedorxcondominiocomprobantedepago
+and comprobantedepagos.fechacomprobantedepago = '2014-02-15'
+and proveedorxcondominios.idproveedorxcondominio = proveedorxservicios.idproveedorxcondominioproveedorxservicio
+and   servicios.idservicio = proveedorxservicios.idservicioproveedorxservicio
+and   proveedorxcondominios.idcondominioproveedorxcondominio = '0'
+and (servicios.descripcionservicio='Gas'))
+as calculo2 on detalles.idproveedorxserviciodetalle = calculo2.idproveedorxservicio
+
+--------------------------------------------------------------------------------------------------------------------------
+
+2. Minimizar deuda de inmuebles morosos
+
+Descripcion: El objetivo de este indicador , es permitir realizar seguimiento y buscar minimizar la cantidad de inmuebles morosos dentro del condominio, al calcular el numero de inmuebles morosos, junto con su deuda, el ejecutivo podra establecer y configurar metas que le permitan realizar dicho seguimiento.
+
+Se tocan las siguientes tablas recibocobros e inmuebles
+
+SQL = select sum(cuotapendienterecibo) as Deuda from gestioncondominio.recibocobros inner join
+(select * from gestioncondominio.inmuebles where idcondominioinmueble = '0')
+as calculo on recibocobros.idinmueblerecibocobro = calculo.idinmueble and
+(estatuscancelacionrecibo = 'PENDIENTE' or estatuscancelacionrecibo = 'VENCIDO')
+and recibocobros.fecharecibocobro='2014-01-03'
+
+------------------------------------------------------------------------------------------------------------------------------
+
+3. Maximizar ingresos por alquiler de areas comunes
+
+Descripcion: El objetivo de este indicador, es permitir realizar seguimiento y buscar maximizar los ingresos que se obtienen, por concepto de alquiler de las areas comunes que posee cada condominio, luego de extraer de la data dichos ingresos, se le permite al ejecutivo configurar metas que permitan el seguimiento de las mismas.
+
+Se tocan las siguientes tablas : pagos, reservacions.
+
+SQL = select sum(montopago) as Ganancia from gestioncondominio.pagos inner join(
+select idreservacion from gestioncondominio.reservacions) as c on
+pagos.idreservacionpago = c.idreservacion and idcondominio = '0' and pagos.fechapago='2014/01/15'
+hacer:
+Se desea saber en que epoca del año se alquila mas para estar pendiente de que funcione todo bien y en cual se alquila menos previendo el tiempo indicado para una reparacion.(Mostrar por mensaje)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+4. Supervisar saldo de un fondo de trabajo
+
+Descripcion: El objetivo de este indicador, es permitir al ejecutivo establecer y configurar metas que busquen maximizar saldo del fondo de reserva, dicho saldo se extrae de la data disponible en el modelo de datos de la aplicacion.
+
+Se tocan las siguientes tablas: fondoreservas
+
+SQL= select saldoactual as Saldo_Actual, montofijfondoreserva as meta,(montofijfondoreserva-saldoactual) as Dispersion from 
+gestioncondominio.fondoreservas where idcondominiofondoreserva='0' and nombrefondoreserva='FondoTrabajo'
+
+hacer:
+Se tiene un fondo de trabajo con una meta (un monto en bs al que se desea llegar), se quiere supervisar con semaforos si el fondo se esta llenando en el tiempo previsto.
+NOTA: Debido a que no se tiene fecha, tomariamos el valor actual que nos trae el sql y le restamos lo que tenemos guardado en 
+el ultimo histotial.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+
+5. Maximizar multas adjudicadas a inmuebles
+
+Descripcion: El objetivo de este indicador, es permitir al ejecutivo establecer y configurar metas, que busquen maximizar+ las multas que se le adjudiquen a cada inmueble del condominio.
+
+Se tocan las siguientes tablas: multas, inmuebles.
+
+SQL = select count(*) as MultasAdjudicadas from gestioncondominio.multas inner join
+(select idinmueble from gestioncondominio.inmuebles where idcondominioinmueble='0')
+as c1 on multas.idinmueblemulta = c1.idinmueble and multas.fechamulta = '2014-01-20'
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+6. Disminuir numero de reclamos y sugerencias
+
+Descripcion: El objetivo del indicador, es permitir dar seguimiento y establecer metas que busquen disminuir el numero de reclamos y sugerencias extraidos desde los datos que almacena la aplicacion.	
+        Se tocan las siguientes tablas : reclamosugerencias.
+
+SQL = select count(*) from gestioncondominio.reclamosugerencias inner join 
+(select idinmueble from gestioncondominio.inmuebles where idcondominioinmueble='0') as c1 on
+reclamosugerencias.idinmueblereclamosugerencia = c1.idinmueble
+
+hacer:
+Añadir la tabla tipo de reclamos para ordenarlos y ver en que categoria hay mas, cambiar el grafico por una tabla que ordene los reclamos por tipo, los contabilice y ponga primero los que tengan mas, para saber cuales atender primero
+
+Sql para realizar el cambio arriba descrito :
+
+
+        SQL = select count(*) from gestioncondominio.reclamosugerencias inner join 
+(select idinmueble from gestioncondominio.inmuebles where idcondominioinmueble='0')
+as c1 on reclamosugerencias.idinmueblereclamosugerencia = c1.idinmueble and reclamosugerencias.idtiporeclamosugerencia = '3'
+
+NOTA: Debido a que no se tiene fecha, tomariamos el valor actual que nos trae el sql y le restamos lo que tenemos guardado en 
+el ultimo histotial.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+7.Supervicion del fondo de reserva 
+Calculo de la deuda que tiene el condominio por los morosos que no pagan. Cuanto es el deficit del fondo de reserva.
+
+      SQL = select saldoactual as Saldo_Actual, montofijfondoreserva as meta, (montofijfondoreserva-saldoactual) as Dispersion from 
+      gestioncondominio.fondoreservas where idcondominiofondoreserva='0' and nombrefondoreserva='FondoReserva'
+
+NOTA: Debido a que no se tiene fecha, tomariamos el valor actual que nos trae el sql y le restamos lo que tenemos guardado en 
+el ultimo histotial.
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+COPROPIETARIOS:
+
+1. Minimizar gastos en servicios basicos comunes
+
+Descripcion: El objetivo de este indicador es minimizar los gastos de servicios basicos que incluye: agua, luz y gas , calculando asi los gastos correspondientes a cada servicio, para luego sumar los 3.
+
+Se tocan las siguientes tablas: detalles, proveedorxservicios, servicios, proveedorxcondominios.
+
+SQL = select sum(montodetalle) as monto from gestioncondominio.detalles inner join
+(select DISTINCT(proveedorxservicios.idproveedorxservicio) from 
+gestioncondominio.proveedorxservicios, 
+gestioncondominio.servicios, 
+gestioncondominio.proveedorxcondominios,
+gestioncondominio.comprobantedepagos
+where 
+proveedorxcondominios.idproveedorxcondominio = comprobantedepagos.idproveedorxcondominiocomprobantedepago
+and comprobantedepagos.fechacomprobantedepago = '2014-02-15'
+and proveedorxcondominios.idproveedorxcondominio = proveedorxservicios.idproveedorxcondominioproveedorxservicio
+and   servicios.idservicio = proveedorxservicios.idservicioproveedorxservicio
+and   proveedorxcondominios.idcondominioproveedorxcondominio = '0'
+and (servicios.descripcionservicio='Agua' or servicios.descripcionservicio='Luz' or servicios.descripcionservicio='Gas'))
+as calculo2 on detalles.idproveedorxserviciodetalle = calculo2.idproveedorxservicio
+
+Hacer:
+Calcular cuanto se debe cobrar el mes que viene, calcular estimado.
+SQL para discriminar en una tabla el gasto por cada servicios basicos.
+
+Agua:
+SQL = select sum(montodetalle) as monto from gestioncondominio.detalles inner join
+(select DISTINCT(proveedorxservicios.idproveedorxservicio) from 
+gestioncondominio.proveedorxservicios, 
+gestioncondominio.servicios, 
+gestioncondominio.proveedorxcondominios,
+gestioncondominio.comprobantedepagos
+where 
+proveedorxcondominios.idproveedorxcondominio = comprobantedepagos.idproveedorxcondominiocomprobantedepago
+and comprobantedepagos.fechacomprobantedepago = '2014-02-15'
+and proveedorxcondominios.idproveedorxcondominio = proveedorxservicios.idproveedorxcondominioproveedorxservicio
+and   servicios.idservicio = proveedorxservicios.idservicioproveedorxservicio
+and   proveedorxcondominios.idcondominioproveedorxcondominio = '0'
+and (servicios.descripcionservicio='Agua'))
+as calculo2 on detalles.idproveedorxserviciodetalle = calculo2.idproveedorxservicio
+
+Luz:
+SQL = select sum(montodetalle) as monto from gestioncondominio.detalles inner join
+(select DISTINCT(proveedorxservicios.idproveedorxservicio) from 
+gestioncondominio.proveedorxservicios, 
+gestioncondominio.servicios, 
+gestioncondominio.proveedorxcondominios,
+gestioncondominio.comprobantedepagos
+where 
+proveedorxcondominios.idproveedorxcondominio = comprobantedepagos.idproveedorxcondominiocomprobantedepago
+and comprobantedepagos.fechacomprobantedepago = '2014-02-15'
+and proveedorxcondominios.idproveedorxcondominio = proveedorxservicios.idproveedorxcondominioproveedorxservicio
+and   servicios.idservicio = proveedorxservicios.idservicioproveedorxservicio
+and   proveedorxcondominios.idcondominioproveedorxcondominio = '0'
+and (servicios.descripcionservicio='Luz'))
+as calculo2 on detalles.idproveedorxserviciodetalle = calculo2.idproveedorxservicio
+
+Gas:
+SQL = select sum(montodetalle) as monto from gestioncondominio.detalles inner join
+(select DISTINCT(proveedorxservicios.idproveedorxservicio) from 
+gestioncondominio.proveedorxservicios, 
+gestioncondominio.servicios, 
+gestioncondominio.proveedorxcondominios,
+gestioncondominio.comprobantedepagos
+where 
+proveedorxcondominios.idproveedorxcondominio = comprobantedepagos.idproveedorxcondominiocomprobantedepago
+and comprobantedepagos.fechacomprobantedepago = '2014-02-15'
+and proveedorxcondominios.idproveedorxcondominio = proveedorxservicios.idproveedorxcondominioproveedorxservicio
+and   servicios.idservicio = proveedorxservicios.idservicioproveedorxservicio
+and   proveedorxcondominios.idcondominioproveedorxcondominio = '0'
+and (servicios.descripcionservicio='Gas'))
+as calculo2 on detalles.idproveedorxserviciodetalle = calculo2.idproveedorxservicio
+
+hacer:
+Se quiere saber cuanta plata se debe tener para pagar el aviso de cobro del mes que viene.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+2. Disminuir gastos extraordinarios
+
+Descripcion: El objetivo de este indicador, es permitir al ejecutivo realizar seguimiento y establecer metas que busquen disminuir los gastos extraordinarios que se le adjudican en cada aviso de cobro.
+
+Se tocan las siguientes las tablas: egresoxrecibos, egresonocomunxinmuebles, inmuebles.
+
+SQL= select sum(montoegresoxrecibo) as Gastos from gestioncondominio.egresoxrecibos inner join 
+(select idegresonocomunxinmueble from 
+gestioncondominio.egresonocomunxinmuebles,
+gestioncondominio.inmuebles,
+gestioncondominio.egresosnocomuns where
+inmuebles.idcondominioinmueble = '0' and egresosnocomuns.fechanocomun='2014-02-20' and 
+inmuebles.idinmueble=egresonocomunxinmuebles.idinmueble and
+egresosnocomuns.idegresosnocomun=egresonocomunxinmuebles.idegresosnocomun) as c
+on egresoxrecibos.idegresonocomunxinmueble=c.idegresonocomunxinmueble
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+3. Minimizar cuota de condominio
+
+Descripcion: El objetivo de este indicador, es permitir al ejecutivo realizar seguimiento y establecer metas que busque disminuir las cuotas de condominio.
+
+Se tocan las siguientes tablas: egresoxrecibos, recibocobros, inmuebles.
+
+SQL = select sum(montoegresoxrecibo) from gestioncondominio.egresoxrecibos inner join
+(select * from gestioncondominio.recibocobros inner join
+(select idinmueble from gestioncondominio.inmuebles where inmuebles.idinmueble='2' and idcondominioinmueble='0')
+as calculo on recibocobros.idinmueblerecibocobro=calculo.idinmueble and
+recibocobros.fecharecibocobro='2014-01-03') as d on egresoxrecibos.idrecibocobro = d.idrecibocobro 
+and idegresonocomunxinmueble is null
+
+hacer:
+Se quiere saber cuanta plata se debe tener para pagar el aviso de cobro del mes que viene.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+SUPERUSUARIO:
+
+1. Maximizar numero de condominios asociados a la aplicacion
+
+Descripcion: El objetivo de este indicador, es permitir al ejecutivo establecer metas que busquen maximizar la cantidad de condominios registrados en la aplicacion (debido que para registrar un condominio, primero deben haber adquirido la aplicacion).
+
+Se tocan las siguientes: condominios
+
+SQL = select count(*) as CantidadCondominios from gestioncondominio.condominios
+
+NOTA: Debido a que no se tiene fecha, tomariamos el valor actual que nos trae el sql y le restamos lo que tenemos guardado en 
+el ultimo histotial.

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  idTipoCond: 
+  nombreTipoCond: MyString
+  estatusTipoCond: MyString
+
+two:
+  idTipoCond: 
+  nombreTipoCond: MyString
+  estatusTipoCond: MyString

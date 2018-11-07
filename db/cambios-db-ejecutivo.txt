@@ -1,0 +1,12 @@
+1.- Eliminar la tabla usuarioporindicadores
+2.- Eliminar la tabla frecuencianotificaciones
+3.- Eliminar la tabla indicadores
+4.- Añadir la tabla indicadors
+
+--------Cambios por hacer luego de importar la BD
+
+1.-Añadir la FK de Rol y Unidad en la tabla 'indicadores' [LISTO]
+
+2.-Insertar la tabla 'historialporindicadors' [Listo]
+
+3.-Añadir la FK de Indicadorporusuario en la tabla 'historialporindicadors'  [LISTO]
